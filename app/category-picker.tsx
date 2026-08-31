@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Movie, MovieStatus } from "@/lib/types";
 
 const statusLabels: Record<MovieStatus, string> = {
@@ -16,6 +16,21 @@ export default function CategoryPicker({ categories }: { categories: { category:
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState<string | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
+  const [trailerMovie, setTrailerMovie] = useState<Movie | null>(null);
+  const [trailerId, setTrailerId] = useState<string | null>(null);
+  const [trailerError, setTrailerError] = useState<string | null>(null);
+  const [trailerLoading, setTrailerLoading] = useState(false);
+
+  useEffect(() => {
+    if (!trailerMovie) return;
+    const closeOnEscape = (event: KeyboardEvent) => event.key === "Escape" && setTrailerMovie(null);
+    document.addEventListener("keydown", closeOnEscape);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.body.style.overflow = "";
+    };
+  }, [trailerMovie]);
 
   async function choose(category: string) {
     setActive(category); setLoading(true);
@@ -46,6 +61,22 @@ export default function CategoryPicker({ categories }: { categories: { category:
     }
   }
 
+  async function openTrailer(movie: Movie) {
+    setTrailerMovie(movie); setTrailerId(null); setTrailerError(null); setTrailerLoading(true);
+    try {
+      const response = await fetch(`/api/trailers?title=${encodeURIComponent(movie.title)}`);
+      const result = await response.json();
+      if (!response.ok || !result.videoId) throw new Error(result.error ?? "No trailer found");
+      setTrailerId(result.videoId);
+    } catch (error) {
+      setTrailerError(error instanceof Error ? error.message : "Could not load this trailer");
+    } finally { setTrailerLoading(false); }
+  }
+
+  function closeTrailer() {
+    setTrailerMovie(null); setTrailerId(null); setTrailerError(null);
+  }
+
   return <>
     <div className="genres">
       {categories.map(({ category, count }) => <button className={active === category ? "active" : ""} key={category} onClick={() => choose(category)}><span>{category}</span><small>{count} film{count === 1 ? "" : "s"}</small></button>)}
@@ -54,7 +85,10 @@ export default function CategoryPicker({ categories }: { categories: { category:
       <div className="results-title"><div><div className="eyebrow">Our picks</div><h2>Four for tonight</h2></div><button onClick={() => choose(active)}>↻ Shuffle again</button></div>
       {statusError && <p className="status-error" role="alert">{statusError}</p>}
       {loading ? <div className="loading">Shuffling the deck…</div> : <div className="movie-grid">{movies.map(movie => <article key={movie.id} className="movie-card">
-        <div className="poster">{movie.poster_url ? <Image src={movie.poster_url} alt={`${movie.title} poster`} fill sizes="(max-width: 700px) 50vw, 25vw" /> : <span className="no-poster">No poster available</span>}</div>
+        <button className="poster poster-link" type="button" onClick={() => openTrailer(movie)} aria-label={`Watch the trailer for ${movie.title}`}>
+          {movie.poster_url ? <Image src={movie.poster_url} alt={`${movie.title} poster`} fill sizes="(max-width: 700px) 50vw, 25vw" /> : <span className="no-poster">No poster available</span>}
+          <span className="trailer-cue"><span aria-hidden="true">▶</span> Watch trailer</span>
+        </button>
         <div className="movie-meta">
           <label className={`status-control ${movie.status}`}>
             <span className="sr-only">Status for {movie.title}</span>
@@ -65,5 +99,15 @@ export default function CategoryPicker({ categories }: { categories: { category:
           <h3>{movie.title}</h3><p>{movie.categories.join(" · ")}</p><div className="ratings"><span>IMDb <b>{movie.imdb_rating ?? "—"}</b></span><span>Metascore <b>{movie.metascore ?? "—"}</b></span></div></div>
       </article>)}</div>}
     </section>}
+    {trailerMovie && <div className="trailer-backdrop" role="presentation" onMouseDown={event => event.target === event.currentTarget && closeTrailer()}>
+      <section className="trailer-modal" role="dialog" aria-modal="true" aria-labelledby="trailer-title">
+        <div className="trailer-head"><div><div className="eyebrow">Now playing</div><h2 id="trailer-title">{trailerMovie.title}</h2></div><button type="button" onClick={closeTrailer} aria-label="Close trailer">×</button></div>
+        <div className="trailer-frame">
+          {trailerLoading && <div className="trailer-message">Searching YouTube for the best trailer…</div>}
+          {trailerError && <div className="trailer-message trailer-error"><b>Trailer unavailable</b><span>{trailerError}</span></div>}
+          {trailerId && <iframe src={`https://www.youtube-nocookie.com/embed/${trailerId}?autoplay=1`} title={`${trailerMovie.title} trailer`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />}
+        </div>
+      </section>
+    </div>}
   </>;
 }

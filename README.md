@@ -5,7 +5,7 @@ A personal movie picker that imports IMDb title metadata through the OMDb API, s
 ## Setup
 
 1. Create a Neon database and copy `.env.example` to `.env.local`.
-2. Set `DATABASE_URL` to your Neon connection string and `OMDB_API_KEY` to an [OMDb API key](https://www.omdbapi.com/apikey.aspx).
+2. Set `DATABASE_URL` to your Neon connection string, `OMDB_API_KEY` to an [OMDb API key](https://www.omdbapi.com/apikey.aspx), and `YOUTUBE_API_KEY` to a YouTube Data API v3 key. The YouTube key powers the trailer search shown when a poster is selected.
 3. Install and run:
 
 ```bash
@@ -22,3 +22,4 @@ OMDb provides the movie title, comma-separated genres, poster URL, Metascore, an
 - `POST /api/movies` with `{ "url": "https://www.imdb.com/title/tt.../" }` imports a film.
 - `GET /api/movies/random?category=Drama` returns up to four random films.
 - `PATCH /api/movies/:id` with `{ "status": "watched" }` updates its status.
+- `GET /api/trailers?title=Movie%20Title` finds the most relevant embeddable YouTube trailer.
