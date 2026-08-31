@@ -23,8 +23,8 @@ export default function CategoryPicker({ categories }: { categories: { category:
     {active && <section className="results">
       <div className="results-title"><div><div className="eyebrow">Our picks</div><h2>Four for tonight</h2></div><button onClick={() => choose(active)}>↻ Shuffle again</button></div>
       {loading ? <div className="loading">Shuffling the deck…</div> : <div className="movie-grid">{movies.map(movie => <article key={movie.id} className="movie-card">
-        <div className="poster"><Image src={movie.poster_url} alt={`${movie.title} poster`} fill sizes="(max-width: 700px) 50vw, 25vw" /></div>
-        <div className="movie-meta"><span className={`status ${movie.status}`}>{movie.status}</span><h3>{movie.title}</h3><p>{movie.categories.join(" · ")}</p></div>
+        <div className="poster">{movie.poster_url ? <Image src={movie.poster_url} alt={`${movie.title} poster`} fill sizes="(max-width: 700px) 50vw, 25vw" /> : <span className="no-poster">No poster available</span>}</div>
+        <div className="movie-meta"><span className={`status ${movie.status}`}>{movie.status}</span><h3>{movie.title}</h3><p>{movie.categories.join(" · ")}</p><div className="ratings"><span>IMDb <b>{movie.imdb_rating ?? "—"}</b></span><span>Metascore <b>{movie.metascore ?? "—"}</b></span></div></div>
       </article>)}</div>}
     </section>}
   </>;

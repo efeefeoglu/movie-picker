@@ -1,11 +1,11 @@
 # ReelPick
 
-A personal movie picker that imports title metadata from IMDb, stores it in Neon Postgres, and serves four random suggestions by genre.
+A personal movie picker that imports IMDb title metadata through the OMDb API, stores it in Neon Postgres, and serves four random suggestions by genre.
 
 ## Setup
 
 1. Create a Neon database and copy `.env.example` to `.env.local`.
-2. Set `DATABASE_URL` to your Neon connection string.
+2. Set `DATABASE_URL` to your Neon connection string and `OMDB_API_KEY` to an [OMDb API key](https://www.omdbapi.com/apikey.aspx).
 3. Install and run:
 
 ```bash
@@ -14,6 +14,8 @@ npm run dev
 ```
 
 The app creates the `movies` table on first use. You can alternatively run `db/schema.sql` in the Neon SQL editor. Movie statuses are `new` (the default), `watched`, and `alone`.
+
+OMDb provides the movie title, comma-separated genres, poster URL, Metascore, and IMDb rating. Existing databases are migrated automatically with nullable `metascore SMALLINT` and `imdb_rating NUMERIC(3,1)` columns; `poster_url` is made nullable because OMDb can return `N/A`.
 
 ## API
 

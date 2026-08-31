@@ -5,6 +5,8 @@ export type Movie = {
   imdb_url: string;
   title: string;
   categories: string[];
-  poster_url: string;
+  poster_url: string | null;
+  metascore: number | null;
+  imdb_rating: number | null;
   status: MovieStatus;
 };
