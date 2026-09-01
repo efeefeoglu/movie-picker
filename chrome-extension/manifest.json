@@ -2,8 +2,11 @@
   "manifest_version": 3,
   "name": "ReelPick for streaming",
   "description": "Add films from MUBI, Prime Video, Netflix, and Max to ReelPick.",
-  "version": "1.1.0",
-  "permissions": ["activeTab", "scripting"],
+  "version": "1.1.1",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
   "host_permissions": [
     "https://*.mubi.com/*",
     "https://*.primevideo.com/*",
@@ -19,7 +22,6 @@
     "https://*.amazon.in/*",
     "https://*.amazon.it/*",
     "https://*.amazon.co.jp/*",
-    "https://v2.sg.media-imdb.com/*",
     "https://movie-picker-lyart.vercel.app/*"
   ],
   "action": {

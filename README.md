@@ -20,13 +20,14 @@ OMDb provides the movie title, comma-separated genres, poster URL, Metascore, an
 ## API
 
 - `POST /api/movies` with `{ "url": "https://www.imdb.com/title/tt.../", "sourceUrl": "https://mubi.com/..." }` imports a film. `sourceUrl` is optional and is displayed as the film's Watch link.
+- `POST /api/movies` also accepts `{ "title": "Movie title", "year": "2024", "sourceUrl": "https://max.com/..." }`; the server resolves the IMDb title through OMDb. `year` is optional.
 - `GET /api/movies/random?category=Drama` returns up to four random films.
 - `PATCH /api/movies/:id` with `{ "status": "watched" }` updates its status.
 - `GET /api/trailers?title=Movie%20Title` finds the most relevant embeddable YouTube trailer.
 
 ## Chrome extension for streaming services
 
-The unpacked extension in `chrome-extension/` adds the film on the current MUBI, Prime Video (including Prime titles hosted on supported Amazon domains), Netflix, or Max (including legacy `hbomax.com` links) page without copying an IMDb URL by hand. It reads the service's movie metadata, finds the closest IMDb title (preferring the detected release year), and sends the IMDb URL and current streaming page URL to the app. Suggestions imported this way include a **Watch** link back to that page.
+The unpacked extension in `chrome-extension/` adds the film on the current MUBI, Prime Video (including Prime titles hosted on supported Amazon domains), Netflix, or Max (including legacy `hbomax.com` links) page without copying an IMDb URL by hand. It reads the service's movie metadata and sends the title, detected release year, and current streaming page URL to the app. The app finds the closest IMDb title, preferring the detected year. Suggestions imported this way include a **Watch** link back to that page.
 
 1. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
 2. Select this repository's `chrome-extension` directory.
@@ -35,4 +36,4 @@ The unpacked extension in `chrome-extension/` adds the film on the current MUBI,
 
 After updating the files, click the extension's **Reload** button on `chrome://extensions` so Chrome applies the expanded site access list.
 
-Page contents are read only after the toolbar button is clicked, using Chrome's `activeTab` permission. Network access is limited to IMDb title search and the deployed ReelPick app.
+Page contents are read only after the toolbar button is clicked, using Chrome's `activeTab` permission. The extension sends the detected title to the deployed ReelPick app, which performs the IMDb lookup server-side through OMDb.
