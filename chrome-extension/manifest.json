@@ -1,15 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "ReelPick for MUBI",
-  "description": "Find the IMDb match for the MUBI film you are viewing and add it to ReelPick.",
-  "version": "1.0.0",
+  "name": "ReelPick for streaming",
+  "description": "Add films from MUBI, Prime Video, Netflix, and Max to ReelPick.",
+  "version": "1.1.0",
   "permissions": ["activeTab", "scripting"],
   "host_permissions": [
     "https://v2.sg.media-imdb.com/*",
     "https://movie-picker-lyart.vercel.app/*"
   ],
   "action": {
-    "default_title": "Add this MUBI film to ReelPick",
+    "default_title": "Add this streaming film to ReelPick",
     "default_popup": "popup.html"
   }
 }
