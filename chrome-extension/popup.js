@@ -49,7 +49,7 @@ async function addMovie() {
   try {
     const imdb = await findImdbMatch(movie);
     showStatus(`Found ${imdb.title}${imdb.year ? ` (${imdb.year})` : ""}. Adding to ReelPick…`, "loading");
-    const response = await fetch(`${appUrl}/api/movies`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: imdb.url }) });
+    const response = await fetch(`${appUrl}/api/movies`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: imdb.url, sourceUrl: movie.sourceUrl }) });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || "ReelPick could not add this film.");
     status.className = "status success";
