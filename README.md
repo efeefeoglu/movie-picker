@@ -31,6 +31,6 @@ The unpacked extension in `chrome-extension/` adds the film on the current MUBI 
 1. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
 2. Select this repository's `chrome-extension` directory.
 3. Pin **ReelPick for MUBI**, visit a film page on MUBI, and click the extension.
-4. On first use, enter the root URL of your running/deployed ReelPick app (for example, `http://localhost:3000`). The URL is saved in Chrome sync storage.
+4. The film is added directly to the ReelPick app at `https://movie-picker-lyart.vercel.app/`.
 
-The extension requests access to HTTP and HTTPS sites because the ReelPick URL is user-configurable. Page contents are read only after the toolbar button is clicked, using Chrome's `activeTab` permission.
+Page contents are read only after the toolbar button is clicked, using Chrome's `activeTab` permission. Network access is limited to IMDb title search and the deployed ReelPick app.
