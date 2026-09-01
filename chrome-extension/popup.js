@@ -14,7 +14,7 @@ function readStreamingMovie() {
   const hostname = location.hostname.replace(/^www\./i, "").toLowerCase();
   const services = [
     { name: "MUBI", matches: (host) => host === "mubi.com" || host.endsWith(".mubi.com") },
-    { name: "Prime Video", matches: (host) => host === "primevideo.com" || host.endsWith(".primevideo.com") },
+    { name: "Prime Video", matches: (host) => host === "primevideo.com" || host.endsWith(".primevideo.com") || /(^|\.)amazon\.(com|ca|de|es|fr|in|it|co\.uk|co\.jp)$/.test(host) },
     { name: "Netflix", matches: (host) => host === "netflix.com" || host.endsWith(".netflix.com") },
     { name: "Max", matches: (host) => host === "max.com" || host.endsWith(".max.com") || host === "hbomax.com" || host.endsWith(".hbomax.com") },
   ];
@@ -31,7 +31,7 @@ function readStreamingMovie() {
   const heading = [...document.querySelectorAll("h1")].map((node) => node.textContent?.trim()).find(Boolean);
   const openGraphTitle = document.querySelector('meta[property="og:title"]')?.content?.trim();
   const twitterTitle = document.querySelector('meta[name="twitter:title"]')?.content?.trim();
-  const rawTitle = jsonLd?.name || heading || openGraphTitle || twitterTitle || document.title;
+  const rawTitle = jsonLd?.name || heading || openGraphTitle || twitterTitle || document.title || "";
   const title = rawTitle
     .replace(/^Watch\s+/i, "")
     .replace(/^(?:Prime Video|MUBI|Max|HBO Max)\s*[-–—:]\s*/i, "")
@@ -77,12 +77,19 @@ async function addMovie() {
 }
 
 async function init() {
+  showStatus("Reading this page…", "loading");
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab?.id) return showStatus("Could not access the current tab.", "error");
-  const [{ result }] = await chrome.scripting.executeScript({ target: { tabId: tab.id }, func: readStreamingMovie });
-  if (result.error) showStatus(result.error, "error");
+  const supportedUrl = /^https:\/\/(?:[^/]+\.)?(?:mubi\.com|primevideo\.com|netflix\.com|max\.com|hbomax\.com|amazon\.(?:com|ca|de|es|fr|in|it|co\.uk|co\.jp))(?:\/|$)/i;
+  if (!supportedUrl.test(tab.url || "")) return showStatus("Open a film page on MUBI, Prime Video, Netflix, or Max first.", "error");
+
+  const injection = await chrome.scripting.executeScript({ target: { tabId: tab.id }, func: readStreamingMovie });
+  const result = injection[0]?.result;
+  if (!result) showStatus("Chrome could not read this page. Reload the tab and try again.", "error");
+  else if (result.error) showStatus(result.error, "error");
   else {
     movie = result;
+    showStatus();
     document.querySelector("#source").textContent = `FILM FOUND ON ${movie.service.toUpperCase()}`;
     document.querySelector("#title").textContent = movie.title;
     document.querySelector("#year").textContent = movie.year || "Year not detected";

@@ -26,11 +26,13 @@ OMDb provides the movie title, comma-separated genres, poster URL, Metascore, an
 
 ## Chrome extension for streaming services
 
-The unpacked extension in `chrome-extension/` adds the film on the current MUBI, Prime Video, Netflix, or Max (including legacy `hbomax.com` links) page without copying an IMDb URL by hand. It reads the service's movie metadata, finds the closest IMDb title (preferring the detected release year), and sends the IMDb URL and current streaming page URL to the app. Suggestions imported this way include a **Watch** link back to that page.
+The unpacked extension in `chrome-extension/` adds the film on the current MUBI, Prime Video (including Prime titles hosted on supported Amazon domains), Netflix, or Max (including legacy `hbomax.com` links) page without copying an IMDb URL by hand. It reads the service's movie metadata, finds the closest IMDb title (preferring the detected release year), and sends the IMDb URL and current streaming page URL to the app. Suggestions imported this way include a **Watch** link back to that page.
 
 1. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
 2. Select this repository's `chrome-extension` directory.
 3. Pin **ReelPick for streaming**, visit a film page on MUBI, Prime Video, Netflix, or Max, and click the extension.
 4. The film is added directly to the ReelPick app at `https://movie-picker-lyart.vercel.app/`.
+
+After updating the files, click the extension's **Reload** button on `chrome://extensions` so Chrome applies the expanded site access list.
 
 Page contents are read only after the toolbar button is clicked, using Chrome's `activeTab` permission. Network access is limited to IMDb title search and the deployed ReelPick app.
