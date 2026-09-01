@@ -5,7 +5,7 @@ A personal movie picker that imports IMDb title metadata through the OMDb API, s
 ## Setup
 
 1. Create a Neon database and copy `.env.example` to `.env.local`.
-2. Set `DATABASE_URL` to your Neon connection string, `OMDB_API_KEY` to an [OMDb API key](https://www.omdbapi.com/apikey.aspx), and `YOUTUBE_API_KEY` to a YouTube Data API v3 key. The YouTube key powers the trailer search shown when a poster is selected.
+2. Set `DATABASE_URL` to your Neon connection string, `OMDB_API_KEY` to an [OMDb API key](https://www.omdbapi.com/apikey.aspx), and `YOUTUBE_API_KEY` to a YouTube Data API v3 key. The YouTube key powers the trailer search shown when a poster is selected. If that key has a website restriction, optionally set `YOUTUBE_API_REFERER` to the registered production origin (for example, `https://movie-picker.example.com/`); otherwise the trailer endpoint uses the current request origin.
 3. Install and run:
 
 ```bash
