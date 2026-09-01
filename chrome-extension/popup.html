@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ReelPick for MUBI</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <header><span>R</span><div><small>MUBI → REELPICK</small><h1>Add this film</h1></div></header>
+      <section id="setup" hidden>
+        <label for="app-url">Your ReelPick web app URL</label>
+        <div class="url-row"><input id="app-url" type="url" placeholder="https://reelpick.example.com" /><button id="save-url">Save</button></div>
+        <p class="hint">This is stored only in Chrome. You can change it later below.</p>
+      </section>
+      <section id="movie" hidden>
+        <p class="label">FILM FOUND ON MUBI</p>
+        <h2 id="title"></h2>
+        <p id="year" class="year"></p>
+        <button id="add" class="primary">Find on IMDb &amp; add</button>
+      </section>
+      <section id="status" class="status" aria-live="polite"></section>
+      <button id="settings" class="settings" hidden>Change ReelPick URL</button>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
