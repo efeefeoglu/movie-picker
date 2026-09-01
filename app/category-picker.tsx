@@ -96,7 +96,8 @@ export default function CategoryPicker({ categories }: { categories: { category:
               {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             </select>
           </label>
-          <h3>{movie.title}</h3><p>{movie.categories.join(" · ")}</p><div className="ratings"><span>IMDb <b>{movie.imdb_rating ?? "—"}</b></span><span>Metascore <b>{movie.metascore ?? "—"}</b></span></div></div>
+          <h3>{movie.title}</h3><p>{movie.categories.join(" · ")}</p><div className="ratings"><span>IMDb <b>{movie.imdb_rating ?? "—"}</b></span><span>Metascore <b>{movie.metascore ?? "—"}</b></span></div>
+          {movie.source_url && <a className="watch-link" href={movie.source_url} target="_blank" rel="noreferrer">Watch <span aria-hidden="true">↗</span></a>}</div>
       </article>)}</div>}
     </section>}
     {trailerMovie && <div className="trailer-backdrop" role="presentation" onMouseDown={event => event.target === event.currentTarget && closeTrailer()}>

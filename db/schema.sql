@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS movies (
   id BIGSERIAL PRIMARY KEY,
   imdb_url TEXT UNIQUE NOT NULL,
+  source_url TEXT,
   title TEXT NOT NULL,
   categories TEXT[] NOT NULL DEFAULT '{}',
   poster_url TEXT,
@@ -11,6 +12,7 @@ CREATE TABLE IF NOT EXISTS movies (
 );
 
 ALTER TABLE movies ALTER COLUMN poster_url DROP NOT NULL;
+ALTER TABLE movies ADD COLUMN IF NOT EXISTS source_url TEXT;
 ALTER TABLE movies ADD COLUMN IF NOT EXISTS metascore SMALLINT;
 ALTER TABLE movies ADD COLUMN IF NOT EXISTS imdb_rating NUMERIC(3,1);
 
