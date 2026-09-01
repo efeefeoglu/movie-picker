@@ -45,30 +45,15 @@ function readStreamingMovie() {
   return title ? { title, year, sourceUrl: canonical, service: service.name } : { error: `Could not read the title from this ${service.name} page.` };
 }
 
-async function findImdbMatch({ title, year }) {
-  const key = title.trim()[0]?.toLowerCase() || "x";
-  const query = encodeURIComponent(`${title}${year ? ` ${year}` : ""}`);
-  const response = await fetch(`https://v2.sg.media-imdb.com/suggestion/${encodeURIComponent(key)}/${query}.json`);
-  if (!response.ok) throw new Error("IMDb search is unavailable right now.");
-  const { d = [] } = await response.json();
-  const movies = d.filter((item) => /^tt\d+$/.test(item.id) && ["feature", "movie", "tvMovie", "short"].includes(item.qid));
-  const exactYear = year && movies.find((item) => String(item.y) === year);
-  const match = exactYear || movies[0];
-  if (!match) throw new Error(`No IMDb movie result was found for “${title}”.`);
-  return { url: `https://www.imdb.com/title/${match.id}/`, title: match.l || title, year: match.y };
-}
-
 async function addMovie() {
   addButton.disabled = true;
   showStatus("Searching IMDb…", "loading");
   try {
-    const imdb = await findImdbMatch(movie);
-    showStatus(`Found ${imdb.title}${imdb.year ? ` (${imdb.year})` : ""}. Adding to ReelPick…`, "loading");
-    const response = await fetch(`${appUrl}/api/movies`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: imdb.url, sourceUrl: movie.sourceUrl }) });
+    const response = await fetch(`${appUrl}/api/movies`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: movie.title, year: movie.year || undefined, sourceUrl: movie.sourceUrl }) });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || "ReelPick could not add this film.");
     status.className = "status success";
-    status.replaceChildren(document.createTextNode(`✓ ${data.movie?.title || imdb.title} was added. `));
+    status.replaceChildren(document.createTextNode(`✓ ${data.movie?.title || movie.title} was added. `));
     const link = document.createElement("a");
     link.href = appUrl; link.target = "_blank"; link.textContent = "Open ReelPick";
     status.append(link);
