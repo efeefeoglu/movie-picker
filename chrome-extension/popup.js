@@ -37,7 +37,7 @@ function readStreamingMovie() {
     .replace(/^(?:Prime Video|MUBI|Max|HBO Max)\s*[-–—:]\s*/i, "")
     .replace(/\s+(?:19|20)\d{2}\s+on\s+(?:MUBI|Prime Video|Netflix|Max|HBO Max).*$/i, "")
     .replace(/\s+on\s+(?:MUBI|Prime Video|Netflix|Max|HBO Max).*$/i, "")
-    .replace(/\s*[|–—-]\s*(?:MUBI|Prime Video|Netflix|Max|HBO Max).*$/i, "")
+    .replace(/\s*[|•·–—-]\s*(?:MUBI|Prime Video|Netflix|Max|HBO Max).*$/i, "")
     .replace(/^Netflix\s*[-–—:]\s*/i, "")
     .trim();
   const date = jsonLd?.dateCreated || jsonLd?.datePublished || document.querySelector('meta[property="video:release_date"]')?.content || document.querySelector('meta[itemprop="dateCreated"]')?.content || "";
