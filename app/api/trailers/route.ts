@@ -6,7 +6,8 @@ type YouTubeSearchResponse = {
 };
 
 export async function GET(request: Request) {
-  const title = new URL(request.url).searchParams.get("title")?.trim();
+  const requestUrl = new URL(request.url);
+  const title = requestUrl.searchParams.get("title")?.trim();
   if (!title) return NextResponse.json({ error: "Movie title is required" }, { status: 400 });
 
   const apiKey = process.env.YOUTUBE_API_KEY;
@@ -18,7 +19,13 @@ export async function GET(request: Request) {
   });
 
   try {
-    const response = await fetch(`https://www.googleapis.com/youtube/v3/search?${params}`, { cache: "no-store" });
+    // Server-side fetches do not add a Referer automatically. Supplying the app
+    // origin allows YouTube keys restricted to this website to pass validation.
+    const referer = process.env.YOUTUBE_API_REFERER?.trim() || `${requestUrl.origin}/`;
+    const response = await fetch(`https://www.googleapis.com/youtube/v3/search?${params}`, {
+      cache: "no-store",
+      headers: { Referer: referer },
+    });
     const result = await response.json() as YouTubeSearchResponse;
     if (!response.ok) return NextResponse.json({ error: result.error?.message ?? "YouTube search failed" }, { status: 502 });
 
