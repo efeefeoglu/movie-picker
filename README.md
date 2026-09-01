@@ -23,3 +23,14 @@ OMDb provides the movie title, comma-separated genres, poster URL, Metascore, an
 - `GET /api/movies/random?category=Drama` returns up to four random films.
 - `PATCH /api/movies/:id` with `{ "status": "watched" }` updates its status.
 - `GET /api/trailers?title=Movie%20Title` finds the most relevant embeddable YouTube trailer.
+
+## Chrome extension for MUBI
+
+The unpacked extension in `chrome-extension/` adds the film on the current MUBI page without copying an IMDb URL by hand. It reads MUBI's movie metadata, finds the closest IMDb title (preferring the detected release year), and sends the IMDb URL to this app's existing movie API.
+
+1. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
+2. Select this repository's `chrome-extension` directory.
+3. Pin **ReelPick for MUBI**, visit a film page on MUBI, and click the extension.
+4. The film is added directly to the ReelPick app at `https://movie-picker-lyart.vercel.app/`.
+
+Page contents are read only after the toolbar button is clicked, using Chrome's `activeTab` permission. Network access is limited to IMDb title search and the deployed ReelPick app.

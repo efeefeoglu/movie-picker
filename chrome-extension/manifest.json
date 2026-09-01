@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "ReelPick for MUBI",
+  "description": "Find the IMDb match for the MUBI film you are viewing and add it to ReelPick.",
+  "version": "1.0.0",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": [
+    "https://v2.sg.media-imdb.com/*",
+    "https://movie-picker-lyart.vercel.app/*"
+  ],
+  "action": {
+    "default_title": "Add this MUBI film to ReelPick",
+    "default_popup": "popup.html"
+  }
+}
