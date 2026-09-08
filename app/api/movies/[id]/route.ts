@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { updateMovieStatus } from "@/lib/db";
 
-const schema = z.object({ status: z.enum(["new", "watched", "alone"]) });
+const schema = z.object({ status: z.enum(["new", "watched", "alone", "secondary"]) });
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {

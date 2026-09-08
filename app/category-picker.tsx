@@ -8,10 +8,14 @@ const statusLabels: Record<MovieStatus, string> = {
   new: "New",
   watched: "Watched",
   alone: "Watch alone",
+  secondary: "Secondary",
 };
 
-export default function CategoryPicker({ categories }: { categories: { category: string; count: number }[] }) {
+type Category = { category: string; count: number };
+
+export default function CategoryPicker({ categories, categoriesWithSecondary }: { categories: Category[]; categoriesWithSecondary: Category[] }) {
   const [active, setActive] = useState("");
+  const [includeSecondary, setIncludeSecondary] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState<string | null>(null);
@@ -32,9 +36,9 @@ export default function CategoryPicker({ categories }: { categories: { category:
     };
   }, [trailerMovie]);
 
-  async function choose(category: string) {
+  async function choose(category: string, secondary = includeSecondary) {
     setActive(category); setLoading(true);
-    const response = await fetch(`/api/movies/random?category=${encodeURIComponent(category)}`);
+    const response = await fetch(`/api/movies/random?category=${encodeURIComponent(category)}&secondary=${secondary}`);
     const result = await response.json();
     setMovies(result.movies ?? []); setLoading(false);
   }
@@ -77,9 +81,26 @@ export default function CategoryPicker({ categories }: { categories: { category:
     setTrailerMovie(null); setTrailerId(null); setTrailerError(null);
   }
 
+  function toggleSecondary(checked: boolean) {
+    setIncludeSecondary(checked);
+    const availableCategories = checked ? categoriesWithSecondary : categories;
+    if (!active) return;
+    if (availableCategories.some(item => item.category === active)) choose(active, checked);
+    else { setActive(""); setMovies([]); }
+  }
+
+  const visibleCategories = includeSecondary ? categoriesWithSecondary : categories;
+
   return <>
+    <div className="movie-filters">
+      <label className="secondary-filter">
+        <input type="checkbox" checked={includeSecondary} onChange={event => toggleSecondary(event.target.checked)} />
+        <span aria-hidden="true" />
+        Include Secondary films
+      </label>
+    </div>
     <div className="genres">
-      {categories.map(({ category, count }) => <button className={active === category ? "active" : ""} key={category} onClick={() => choose(category)}><span>{category}</span><small>{count} film{count === 1 ? "" : "s"}</small></button>)}
+      {visibleCategories.map(({ category, count }) => <button className={active === category ? "active" : ""} key={category} onClick={() => choose(category)}><span>{category}</span><small>{count} film{count === 1 ? "" : "s"}</small></button>)}
     </div>
     {active && <section className="results">
       <div className="results-title"><div><div className="eyebrow">Our picks</div><h2>Four for tonight</h2></div><button onClick={() => choose(active)}>↻ Shuffle again</button></div>
@@ -96,7 +117,7 @@ export default function CategoryPicker({ categories }: { categories: { category:
               {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             </select>
           </label>
-          <h3>{movie.title}</h3><p>{movie.categories.join(" · ")}</p><div className="ratings"><span>IMDb <b>{movie.imdb_rating ?? "—"}</b></span><span>Metascore <b>{movie.metascore ?? "—"}</b></span></div>
+          <h3>{movie.title}</h3><p>{movie.categories.join(" · ")}</p><div className="ratings"><span>IMDb <b>{movie.imdb_rating ?? "—"}</b></span><span>Metascore <b>{movie.metascore ?? "—"}</b></span><span>Runtime <b>{movie.duration ? `${movie.duration} min` : "—"}</b></span></div>
           {movie.source_url && <a className="watch-link" href={movie.source_url} target="_blank" rel="noreferrer">Watch <span aria-hidden="true">↗</span></a>}</div>
       </article>)}</div>}
     </section>}

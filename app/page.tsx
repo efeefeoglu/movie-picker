@@ -5,8 +5,11 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   let categories: { category: string; count: number }[] = [];
+  let categoriesWithSecondary: { category: string; count: number }[] = [];
   let configured = true;
-  try { categories = await getCategories(); } catch { configured = false; }
+  try {
+    [categories, categoriesWithSecondary] = await Promise.all([getCategories(), getCategories(true)]);
+  } catch { configured = false; }
 
   return (
     <main>
@@ -23,7 +26,7 @@ export default async function Home() {
         </div>
         {!configured ? (
           <div className="empty"><b>Connect your Neon database</b><p>Add <code>DATABASE_URL</code> to start building your collection.</p></div>
-        ) : categories.length ? <CategoryPicker categories={categories} /> : (
+        ) : categoriesWithSecondary.length ? <CategoryPicker categories={categories} categoriesWithSecondary={categoriesWithSecondary} /> : (
           <div className="empty"><b>Your screening room is empty.</b><p>Add an IMDb film and your genres will appear here.</p><a href="/add">Add your first film →</a></div>
         )}
       </section>
