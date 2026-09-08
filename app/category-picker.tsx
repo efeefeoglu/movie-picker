@@ -57,7 +57,9 @@ export default function CategoryPicker({ categories, categoriesWithSecondary }: 
       if (!response.ok) throw new Error("Status update failed");
 
       const result = await response.json();
-      setMovies(current => current.map(item => item.id === movie.id ? result.movie : item));
+      setMovies(current => status === "watched"
+        ? current.filter(item => item.id !== movie.id)
+        : current.map(item => item.id === movie.id ? result.movie : item));
     } catch {
       setStatusError(`Could not update ${movie.title}. Please try again.`);
     } finally {

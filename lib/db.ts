@@ -53,14 +53,16 @@ export async function saveMovie(movie: Omit<Movie, "id" | "status" | "source_url
 export async function getCategories(includeSecondary = false) {
   await ensureSchema();
   const rows = await db()`SELECT category, COUNT(*)::int AS count FROM movies,
-    UNNEST(categories) AS category WHERE (${includeSecondary} OR status <> 'secondary') GROUP BY category ORDER BY category`;
+    UNNEST(categories) AS category WHERE status <> 'watched'
+      AND (${includeSecondary} OR status <> 'secondary') GROUP BY category ORDER BY category`;
   return rows as { category: string; count: number }[];
 }
 
 export async function getRandomMovies(category: string, includeSecondary = false, limit = 4) {
   await ensureSchema();
   const rows = await db()`SELECT id::text, imdb_url, source_url, title, categories, poster_url, metascore, imdb_rating::float, duration, status
-    FROM movies WHERE ${category} = ANY(categories) AND (${includeSecondary} OR status <> 'secondary') ORDER BY RANDOM() LIMIT ${limit}`;
+    FROM movies WHERE ${category} = ANY(categories) AND status <> 'watched'
+      AND (${includeSecondary} OR status <> 'secondary') ORDER BY RANDOM() LIMIT ${limit}`;
   return rows as Movie[];
 }
 
