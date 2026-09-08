@@ -1,4 +1,4 @@
-type OmdbResponse = { Response: "True" | "False"; Error?: string; imdbID?: string; Title?: string; Genre?: string; Poster?: string; Metascore?: string; imdbRating?: string };
+type OmdbResponse = { Response: "True" | "False"; Error?: string; imdbID?: string; Title?: string; Genre?: string; Poster?: string; Metascore?: string; imdbRating?: string; Runtime?: string };
 
 function imdbIdFromUrl(imdbUrl: string) {
   const url = new URL(imdbUrl);
@@ -12,6 +12,12 @@ function optionalNumber(value?: string) {
   if (!value || value === "N/A") return null;
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
+}
+
+function runtimeMinutes(value?: string) {
+  if (!value || value === "N/A") return null;
+  const match = value.match(/^(\d+) min$/);
+  return match ? Number(match[1]) : null;
 }
 
 export async function fetchOmdbMovie(imdbUrl: string) {
@@ -58,5 +64,6 @@ function movieFromResponse(data: OmdbResponse, canonicalUrl: string) {
     poster_url: data.Poster && data.Poster !== "N/A" ? data.Poster : null,
     metascore: optionalNumber(data.Metascore),
     imdb_rating: optionalNumber(data.imdbRating),
+    duration: runtimeMinutes(data.Runtime),
   };
 }

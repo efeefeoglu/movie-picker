@@ -1,4 +1,4 @@
-export type MovieStatus = "new" | "watched" | "alone";
+export type MovieStatus = "new" | "watched" | "alone" | "secondary";
 
 export type Movie = {
   id: string;
@@ -9,5 +9,6 @@ export type Movie = {
   poster_url: string | null;
   metascore: number | null;
   imdb_rating: number | null;
+  duration: number | null;
   status: MovieStatus;
 };
