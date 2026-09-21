@@ -24,7 +24,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Link href="/" className="brand brand-logo" aria-label="ReelPick home">
             <Image src="/reelpick-logo.png" alt="ReelPick" width={1049} height={258} priority />
           </Link>
-          <nav><Link href="/">Discover</Link><Link href="/add" className="add-link">+ Add a film</Link></nav>
+          <nav><Link href="/">Discover</Link><Link href="/movies">All movies</Link><Link href="/add" className="add-link">+ Add a film</Link></nav>
         </header>
         {children}
         <footer>
