@@ -1,6 +1,6 @@
 # ReelPick
 
-A personal movie picker that imports IMDb title metadata through the OMDb API, stores it in Neon Postgres, and serves four random suggestions by genre.
+A personal movie picker that imports IMDb title metadata through the OMDb API, stores it in Neon Postgres, and serves one random eligible movie or four suggestions by genre.
 
 ## Setup
 
@@ -21,6 +21,7 @@ OMDb provides the movie title, comma-separated genres, poster URL, Metascore, an
 
 - `POST /api/movies` with `{ "url": "https://www.imdb.com/title/tt.../", "sourceUrl": "https://mubi.com/..." }` imports a film. `sourceUrl` is optional and is displayed as the film's Watch link.
 - `POST /api/movies` also accepts `{ "title": "Movie title", "year": "2024", "sourceUrl": "https://max.com/..." }`; the server resolves the IMDb title through OMDb. `year` is optional.
+- `GET /api/movies/random` returns one random film excluding watched and secondary titles.
 - `GET /api/movies/random?category=Drama` returns up to four random unwatched films.
 - `PATCH /api/movies/:id` with `{ "status": "watched" }` updates its status.
 - `GET /api/trailers?title=Movie%20Title` finds the most relevant embeddable YouTube trailer.

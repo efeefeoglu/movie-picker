@@ -14,6 +14,7 @@ const statusLabels: Record<MovieStatus, string> = {
 type Category = { category: string; count: number };
 
 export default function CategoryPicker({ categories, categoriesWithSecondary }: { categories: Category[]; categoriesWithSecondary: Category[] }) {
+  const [expanded, setExpanded] = useState(false);
   const [active, setActive] = useState("");
   const [includeSecondary, setIncludeSecondary] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -93,7 +94,10 @@ export default function CategoryPicker({ categories, categoriesWithSecondary }: 
 
   const visibleCategories = includeSecondary ? categoriesWithSecondary : categories;
 
+  if (!expanded) return <button className="open-genres" type="button" onClick={() => setExpanded(true)}><span>Browse by genre</span><small>Reveal genres &amp; four random picks</small></button>;
+
   return <>
+    <div className="genre-toolbar"><button type="button" onClick={() => setExpanded(false)}>× Hide genre picker</button></div>
     <div className="movie-filters">
       <label className="secondary-filter">
         <input type="checkbox" checked={includeSecondary} onChange={event => toggleSecondary(event.target.checked)} />
