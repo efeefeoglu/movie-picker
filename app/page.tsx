@@ -1,5 +1,6 @@
 import { getCategories } from "@/lib/db";
 import CategoryPicker from "./category-picker";
+import HeroPicker from "./hero-picker";
 
 export const dynamic = "force-dynamic";
 
@@ -14,15 +15,12 @@ export default async function Home() {
   return (
     <main>
       <section className="hero">
-        <div className="eyebrow">Tonight&apos;s feature presentation</div>
-        <h1>Your next favorite<br />film is <em>waiting.</em></h1>
-        <p>Choose a mood. We&apos;ll pull four films from your personal collection—no endless scrolling required.</p>
-        <div className="scroll-cue">Explore your genres <span>↓</span></div>
+        <HeroPicker configured={configured} />
       </section>
       <section className="collection">
         <div className="section-head">
-          <div><div className="eyebrow">The collection</div><h2>What are you in the mood for?</h2></div>
-          <p>Pick a genre and leave the rest to chance.</p>
+          <div><div className="eyebrow">More ways to pick</div><h2>Have a genre in mind?</h2></div>
+          <p>Open the genre picker for four more choices.</p>
         </div>
         {!configured ? (
           <div className="empty"><b>Connect your Neon database</b><p>Add <code>DATABASE_URL</code> to start building your collection.</p></div>

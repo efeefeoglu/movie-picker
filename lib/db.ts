@@ -66,6 +66,13 @@ export async function getRandomMovies(category: string, includeSecondary = false
   return rows as Movie[];
 }
 
+export async function getRandomMovie() {
+  await ensureSchema();
+  const rows = await db()`SELECT id::text, imdb_url, source_url, title, categories, poster_url, metascore, imdb_rating::float, duration, status
+    FROM movies WHERE status NOT IN ('watched', 'secondary') ORDER BY RANDOM() LIMIT 1`;
+  return rows[0] as Movie | undefined;
+}
+
 export async function updateMovieStatus(id: string, status: MovieStatus) {
   const rows = await db()`UPDATE movies SET status = ${status} WHERE id = ${id}
     RETURNING id::text, imdb_url, source_url, title, categories, poster_url, metascore, imdb_rating::float, duration, status`;
