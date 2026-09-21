@@ -73,6 +73,13 @@ export async function getRandomMovie() {
   return rows[0] as Movie | undefined;
 }
 
+export async function getAllMovies() {
+  await ensureSchema();
+  const rows = await db()`SELECT id::text, imdb_url, source_url, title, categories, poster_url, metascore, imdb_rating::float, duration, status
+    FROM movies ORDER BY title ASC`;
+  return rows as Movie[];
+}
+
 export async function updateMovieStatus(id: string, status: MovieStatus) {
   const rows = await db()`UPDATE movies SET status = ${status} WHERE id = ${id}
     RETURNING id::text, imdb_url, source_url, title, categories, poster_url, metascore, imdb_rating::float, duration, status`;
