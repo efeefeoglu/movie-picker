@@ -20,3 +20,5 @@
 .imdb-form .add-movie-fields input{display:block;width:100%;margin-top:13px}
 .imdb-form .add-movie-fields button{height:53px}
 @media(max-width:750px){.imdb-form .add-movie-fields{display:grid;grid-template-columns:1fr}.imdb-form .add-movie-fields button{height:auto}}
+
+.hero-movie-details .watch-link + .watch-link{margin-left:18px}.hero-poster.poster-link{width:auto}.hero-poster:hover .trailer-cue{opacity:1;transform:none}
