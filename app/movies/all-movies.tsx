@@ -13,8 +13,10 @@ const statusLabels: Record<MovieStatus, string> = {
 
 export default function AllMovies({ initialMovies }: { initialMovies: Movie[] }) {
   const [movies, setMovies] = useState(initialMovies);
+  const [showWatched, setShowWatched] = useState(false);
   const [updating, setUpdating] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const visibleMovies = movies.filter(movie => showWatched || movie.status !== "watched");
 
   async function changeStatus(movie: Movie, status: MovieStatus) {
     if (status === movie.status) return;
@@ -38,9 +40,19 @@ export default function AllMovies({ initialMovies }: { initialMovies: Movie[] })
 
   return (
     <>
+      <div className="movie-filters">
+        <label className="secondary-filter">
+          <input type="checkbox" role="switch" checked={showWatched} onChange={event => setShowWatched(event.target.checked)} />
+          <span aria-hidden="true" />
+          Show watched movies
+        </label>
+      </div>
       {error && <p className="status-error" role="alert">{error}</p>}
+      {visibleMovies.length === 0 && (
+        <div className="empty"><b>No unwatched movies.</b><p>Turn on “Show watched movies” to see your full collection.</p></div>
+      )}
       <div className="movie-grid library-grid">
-        {movies.map(movie => (
+        {visibleMovies.map(movie => (
           <article key={movie.id} className="movie-card">
             <a className="poster poster-link" href={movie.imdb_url} target="_blank" rel="noreferrer" aria-label={`View ${movie.title} on IMDb`}>
               {movie.poster_url ? <Image src={movie.poster_url} alt={`${movie.title} poster`} fill sizes="(max-width: 700px) 50vw, 25vw" /> : <span className="no-poster">No poster available</span>}
